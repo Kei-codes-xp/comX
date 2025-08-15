@@ -497,9 +497,11 @@
       height="600"
       aria-hidden="true"
     />
+
+    {{-- Hero Page Welcome Blade --}}
     <div class="hero-content container">
       <h1>
-        Vanjoe. Empowerment.<br />
+        Representation. Empowerment.<br />
         <span>Connectivity.</span>
       </h1>
       <p>Be part of the bigger landscape of multimedia arts in the country</p>
