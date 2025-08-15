@@ -499,7 +499,7 @@
     />
     <div class="hero-content container">
       <h1>
-        Representation. Empowerment.<br />
+        Vanjoe. Empowerment.<br />
         <span>Connectivity.</span>
       </h1>
       <p>Be part of the bigger landscape of multimedia arts in the country</p>
