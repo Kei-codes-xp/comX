@@ -1,6 +1,6 @@
 @extends('layouts.member.master')
 @section('ribbon')
-        <!-- Content Section -->
+    <!-- Content Section -->
     <section class="content-section">
         <div class="content-container">
             <div class="content-header">
@@ -13,32 +13,6 @@
     <!-- Tab Navigation -->
     <nav class="tab-nav">
         <div class="tab-container">
-            {{-- <ul class="tab-items">
-                <li class="tab-item">
-                    <a href="#" class="tab-link active">
-                        <span class="tab-indicator"></span>
-                        YOUR PROFILE
-                    </a>
-                </li>
-                <li class="tab-item">
-                    <a href="#" class="tab-link">
-                        <span class="tab-indicator"></span>
-                        PAYMENT
-                    </a>
-                </li>
-                <li class="tab-item">
-                    <a href="#" class="tab-link">
-                        <span class="tab-indicator"></span>
-                        NOTIFICATION
-                    </a>
-                </li>
-                <li class="tab-item">
-                    <a href="#" class="tab-link">
-                        <span class="tab-indicator"></span>
-                        AS PERSONAL
-                    </a>
-                </li>
-            </ul> --}}
         </div>
     </nav>
 @endsection
@@ -48,38 +22,31 @@
 
     <div class="container">
         <main class="content">
-            {{-- <div class="forum-header">
-                <h1>Community Forum</h1>
-                <button class="create-btn" id="openEventModalBtn" onclick="openEventModal()">
-                    <i class="fas fa-plus"></i>
-                    Create Discussion
-                </button>
-            </div> --}}
 
-            <!-- Discussion Posts -->
             <div id="discussions-container">
-                @foreach ($discussions as $discussion)
-                    <article class="discussion-card" data-discussion-id="1">
+                @forelse ($discussions as $discussion)
+                    <article class="discussion-card" data-discussion-id="{{ $discussion->id }}">
                         <div class="discussion-header">
                             <h2 class="discussion-title">{{ $discussion->title }}</h2>
                             <div class="discussion-meta">
                                 <span class="category">Photography</span>
-
                                 <span class="timestamp">{{ $discussion->created_at->diffForHumans() }}</span>
                             </div>
                         </div>
 
                         <div class="post-content">
                             <div class="user-info">
-                                <img src="{{ $discussion->user->avatar_url ? asset('storage/' . $discussion->user->avatar_url) : asset('img/user.png') }}" alt="User Avatar" class="avatar">
+                                <img src="{{ $discussion->user->avatar_url ? asset('storage/' . $discussion->user->avatar_url) : asset('img/user.png') }}"
+                                    alt="User Avatar" class="avatar">
                                 <div class="user-details">
-                                    <strong class="username">{{ $discussion->user->username }}</strong>
+                                    <strong
+                                        class="username">{{ optional($discussion->user)->username ?? 'Unknown' }}</strong>
                                     <p class="user-role">Community Moderator</p>
                                 </div>
                             </div>
 
                             <div class="post-body">
-                                <p>{{$discussion->body}}</p>
+                                <p>{{ $discussion->body }}</p>
                                 <div class="post-image">
                                     <img src="{{ $discussion->image_path ? asset('storage/' . $discussion->image_path) : asset('img/user.png') }}"
                                         alt="Avatar">
@@ -89,11 +56,12 @@
                             <div class="post-actions">
                                 <button class="action-btn like-btn">
                                     <i class="far fa-heart"></i>
-                                    <span>{{ $discussion->comments->count() }}</span>
+                                    <span>{{ $discussion->comments_count ?? $discussion->comments->count() }}</span>
                                 </button>
                                 <button class="action-btn comment-btn" onclick="toggleComments({{ $discussion->id }})">
                                     <i class="far fa-comment"></i>
-                                    <span>{{ $discussion->comments->count() }} Comments</span>
+                                    <span>{{ $discussion->comments_count ?? $discussion->comments->count() }}
+                                        Comments</span>
                                 </button>
                                 <button class="action-btn share-btn">
                                     <i class="far fa-share-square"></i>
@@ -102,171 +70,104 @@
                             </div>
                         </div>
 
-                        <!-- Comment Section -->
                         <div id="comments-{{ $discussion->id }}" class="comments-section hidden">
-                            <div class="comment-form">
-                                <img src="{{ auth()->user()->avatar_url ? asset('storage/' . auth()->user()->avatar_url) : asset('img/user.png') }}" alt="User Avatar" class="comment-avatar">
-                                {{-- <img src="{{ $discussion->user->avatar_url ? asset('storage/' . $discussion->user->avatar_url) : asset('img/user.png') }}" alt="User Avatar" class="avatar"> --}}
-                                <div class="comment-input-wrapper">
-                                    <form action="{{ route('store.comment', ['discussion' => $discussion->id]) }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="discussion_id" value="{{ $discussion->id }}">
-                                        <textarea name="body" placeholder="Write a comment..." class="comment-input"></textarea>
-                                        <button type="submit" class="comment-submit-btn">Post</button>
-                                    </form>
+                            @auth
+                                <div class="comment-form">
+                                    <img src="{{ auth()->user()->avatar_url ? asset('storage/' . auth()->user()->avatar_url) : asset('img/user.png') }}"
+                                        alt="User Avatar" class="comment-avatar">
+                                    <div class="comment-input-wrapper">
+                                        <form action="{{ route('store.comment', ['discussion' => $discussion->id]) }}"
+                                            method="POST">
+                                            @csrf
+                                            <input type="hidden" name="discussion_id" value="{{ $discussion->id }}">
+                                            <textarea name="body" placeholder="Write a comment..." class="comment-input"></textarea>
+                                            <button type="submit" class="comment-submit-btn">Post</button>
+                                        </form>
+                                    </div>
                                 </div>
-                            </div>
+                            @endauth
 
                             <div class="comments-list">
-                                @foreach ($discussion->comments->where('parent_id', null) as $comment)
-                                    <div class="comment">
-                                        <img src="{{ $comment->user->avatar_url ? asset('storage/' . $comment->user->avatar_url) : asset('img/user.png') }}" alt="User Avatar" class="comment-avatar">
-                                        
-                                        <div class="comment-content">
-                                            <div class="comment-header">
-                                                <strong class="comment-author">{{ $comment->user->username }}</strong>
-                                                <span class="comment-time">{{ $comment->created_at->diffForHumans() }}</span>
-                                            </div>
-                                            <p class="comment-text">{{ $comment->body }}</p>
-                                            <div class="comment-actions">
-                                                <button class="comment-action-btn">
-                                                    <i class="far fa-heart"></i> 0
-                                                </button>
-                                                <button class="comment-action-btn reply-btn" onclick="toggleReplyForm(this)">
-                                                    <i class="far fa-reply"></i> Reply
-                                                </button>
-                                            </div>
+                                @php $rootComments = $discussion->comments->where('parent_id', null); @endphp
 
-                                            <!-- Reply Form -->
-                                            <div class="reply-form hidden">
-                                                <img src="{{ auth()->user()->avatar_url ? asset('storage/' . auth()->user()->avatar_url) : asset('img/user.png') }}" alt="Your Avatar" class="reply-avatar">
-                                                <div class="reply-input-wrapper">
-                                                    <form action="{{ route('store.comment', ['discussion' => $discussion->id]) }}" method="POST">
-                                                        @csrf
-                                                        <input type="hidden" name="discussion_id" value="{{ $discussion->id }}">
-                                                        <input type="hidden" name="parent_id" value="{{ $comment->id }}">
-                                                        <textarea name="body" placeholder="Write a reply..." class="reply-input"></textarea>
-                                                        <button type="submit" class="reply-submit-btn">Reply</button>
-                                                    </form>
+                                @if ($rootComments->count() > 0)
+                                    @foreach ($rootComments as $comment)
+                                        <div class="comment">
+                                            <img src="{{ $comment->user->avatar_url ? asset('storage/' . $comment->user->avatar_url) : asset('img/user.png') }}"
+                                                alt="User Avatar" class="comment-avatar">
+
+                                            <div class="comment-content">
+                                                <div class="comment-header">
+                                                    <strong
+                                                        class="comment-author">{{ optional($comment->user)->username ?? 'Unknown' }}</strong>
+                                                    <span
+                                                        class="comment-time">{{ $comment->created_at->diffForHumans() }}</span>
                                                 </div>
-                                            </div>
+                                                <p class="comment-text">{{ $comment->body }}</p>
+                                                <div class="comment-actions">
+                                                    <button class="comment-action-btn"><i class="far fa-heart"></i>
+                                                        0</button>
+                                                    @auth
+                                                        <button class="comment-action-btn reply-btn"
+                                                            onclick="toggleReplyForm(this)">
+                                                            <i class="far fa-reply"></i> Reply
+                                                        </button>
+                                                    @endauth
+                                                </div>
 
-                                            <!-- Replies -->
-                                            @foreach ($comment->replies as $reply)
-                                                <div class="comment reply">
-                                                    <img src="{{ $reply->user->avatar_url ? asset('storage/' . $reply->user->avatar_url) : asset('img/user.png') }}" alt="User Avatar" class="comment-avatar">
-                                                    <div class="comment-content">
-                                                        <div class="comment-header">
-                                                            <strong class="comment-author">{{ $reply->user->username }}</strong>
-                                                            <span class="comment-time">{{ $reply->created_at->diffForHumans() }}</span>
-                                                        </div>
-                                                        <p class="comment-text">{{ $reply->body }}</p>
-                                                        <div class="comment-actions">
-                                                            <button class="comment-action-btn">
-                                                                <i class="far fa-heart"></i> 0
-                                                            </button>
+                                                @auth
+                                                    <div class="reply-form hidden">
+                                                        <img src="{{ auth()->user()->avatar_url ? asset('storage/' . auth()->user()->avatar_url) : asset('img/user.png') }}"
+                                                            alt="Your Avatar" class="reply-avatar">
+                                                        <div class="reply-input-wrapper">
+                                                            <form
+                                                                action="{{ route('store.comment', ['discussion' => $discussion->id]) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                <input type="hidden" name="discussion_id"
+                                                                    value="{{ $discussion->id }}">
+                                                                <input type="hidden" name="parent_id"
+                                                                    value="{{ $comment->id }}">
+                                                                <textarea name="body" placeholder="Write a reply..." class="reply-input"></textarea>
+                                                                <button type="submit" class="reply-submit-btn">Reply</button>
+                                                            </form>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            @endforeach
+                                                @endauth
+
+                                                @foreach ($comment->replies as $reply)
+                                                    <div class="comment reply">
+                                                        <img src="{{ $reply->user->avatar_url ? asset('storage/' . $reply->user->avatar_url) : asset('img/user.png') }}"
+                                                            alt="User Avatar" class="comment-avatar">
+                                                        <div class="comment-content">
+                                                            <div class="comment-header">
+                                                                <strong
+                                                                    class="comment-author">{{ optional($reply->user)->username ?? 'Unknown' }}</strong>
+                                                                <span
+                                                                    class="comment-time">{{ $reply->created_at->diffForHumans() }}</span>
+                                                            </div>
+                                                            <p class="comment-text">{{ $reply->body }}</p>
+                                                            <div class="comment-actions">
+                                                                <button class="comment-action-btn"><i
+                                                                        class="far fa-heart"></i> 0</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         </div>
-                                    </div>
-                                @endforeach
+                                    @endforeach
+                                @else
+                                    <p class="no-comments">No comments yet. Be the first to comment!</p>
+                                @endif
                             </div>
                         </div>
                     </article>
-                @endforeach
-
-                <!-- Discussion 2 -->
-                <article class="discussion-card" data-discussion-id="2">
-                    <div class="discussion-header">
-                        <h2 class="discussion-title">Best Camera Settings for Night Photography</h2>
-                        <div class="discussion-meta">
-                            <span class="category">Tips & Tricks</span>
-                            <span class="timestamp">5 hours ago</span>
-                        </div>
-                    </div>
-
-                    <div class="post-content">
-                        <div class="user-info">
-                            <img src="https://i.pravatar.cc/40?img=4" alt="User Avatar" class="avatar">
-                            <div class="user-details">
-                                <strong class="username">night_shooter</strong>
-                                <p class="user-role">Photography Expert</p>
-                            </div>
-                        </div>
-
-                        <div class="post-body">
-                            <p>I've been experimenting with night photography lately and wanted to share some settings that
-                                have worked well for me. What are your go-to settings for low light situations?</p>
-                        </div>
-
-                        <div class="post-actions">
-                            <button class="action-btn like-btn">
-                                <i class="far fa-heart"></i>
-                                <span>15</span>
-                            </button>
-                            <button class="action-btn comment-btn" onclick="toggleComments(2)">
-                                <i class="far fa-comment"></i>
-                                <span>12 Comments</span>
-                            </button>
-                            <button class="action-btn share-btn">
-                                <i class="far fa-share-square"></i>
-                                Share
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Comment Section -->
-                    <div id="comments-{{ $discussion->id }}" class="comments-section hidden">
-                        @foreach ($discussions as $discussion)
-                            @foreach ($discussion->comments->where('parent_id', null) as $comment)
-                                <div class="comment-form">
-                                    <img src="https://i.pravatar.cc/32?img=5" alt="Your Avatar" class="comment-avatar">
-                                    <div class="comment-input-wrapper">
-                                        <textarea placeholder="Write a comment..." class="comment-input"></textarea>
-                                        <button class="comment-submit-btn">Post</button>
-                                    </div>
-                                </div>
-
-                                <div class="comments-list">
-                                    <div class="comment">
-                                        <img src="https://i.pravatar.cc/32?img=6" alt="User Avatar"
-                                            class="comment-avatar">
-                                        <div class="comment-content">
-                                            <div class="comment-header">
-                                                <strong class="comment-author">pro_photographer</strong>
-                                                <span class="comment-time">3 hours ago</span>
-                                            </div>
-                                            <p class="comment-text">I usually start with ISO 3200, f/2.8, and 15-30 second
-                                                exposures depending on the scene.</p>
-                                            <div class="comment-actions">
-                                                <button class="comment-action-btn">
-                                                    <i class="far fa-heart"></i> 8
-                                                </button>
-                                                <button class="comment-action-btn reply-btn"
-                                                    onclick="toggleReplyForm(this)">
-                                                    <i class="far fa-reply"></i> Reply
-                                                </button>
-                                            </div>
-
-                                            <!-- Reply Form -->
-                                            <div class="reply-form hidden">
-                                                <img src="https://i.pravatar.cc/24?img=5" alt="Your Avatar"
-                                                    class="reply-avatar">
-                                                <div class="reply-input-wrapper">
-                                                    <textarea placeholder="Write a reply..." class="reply-input"></textarea>
-                                                    <button class="reply-submit-btn">Reply</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        @endforeach
-                    </div>
-                </article>
+                @empty
+                    <p>No discussions yet.</p>
+                @endforelse
             </div>
+
         </main>
 
         <aside class="sidebar">
