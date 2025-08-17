@@ -218,14 +218,12 @@ class MemberTaskController extends Controller
 
         // Avatar upload (optional)
         if ($request->hasFile('avatar_url')) {
-            try {
-                $path = $request->file('avatar_url')->store('avatars', 'public');
-                \Log::info('File stored at path: ' . $path);
-                $user->avatar_url = $path;
-            } catch (\Exception $e) {
-                \Log::error('Error storing avatar: ' . $e->getMessage());
-                return redirect()->back()->with('error', 'Error uploading avatar: ' . $e->getMessage());
-            }
+            $file = $request->file('avatar_url');
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            $file->move(public_path('uploads/avatars'), $filename);
+
+            $user->avatar_url = 'uploads/avatars/' . $filename; // ✅ Save correct relative path
         }
 
         try {
