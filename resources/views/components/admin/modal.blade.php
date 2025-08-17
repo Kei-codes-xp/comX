@@ -63,11 +63,13 @@
                             <span style="color: red; margin-left: 5px; cursor: pointer;">Remove</span>
                         </div>
                     </div>
-                    <div class="upload-box" id="uploadBox" onclick="triggerFileInput()">
+                    <div class="upload-box">
                         <i class="fas fa-cloud-upload-alt"></i><br>
-                        You can also upload file here
-                        <input type="file" name="file_path" id="file_path" style="display:none;">
+                        <input type="file" name="file_path" id="file_path" style="">
+
+
                     </div>
+
                 </div>
 
 
@@ -81,3 +83,34 @@
     </div>
 
 </form>
+
+{{-- 
+<script>
+    function triggerFileInputHere() {
+        document.getElementById('file_path').click();
+    }
+
+    document.getElementById('file_path').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const chipsContainer = document.querySelector('.chips');
+
+        // Clear previous chip
+        chipsContainer.innerHTML = '';
+
+        if (file) {
+            const chip = document.createElement('div');
+            chip.classList.add('chip');
+            chip.innerHTML = `
+                <i class="fas fa-file-alt"></i> ${file.name} 
+                <span style="color: red; margin-left: 5px; cursor: pointer;" onclick="removeFile()">Remove</span>
+            `;
+            chipsContainer.appendChild(chip);
+        }
+    });
+
+    function removeFile() {
+        const fileInput = document.getElementById('file_path');
+        fileInput.value = ''; // Clear the file input
+        document.querySelector('.chips').innerHTML = ''; // Remove the chip
+    }
+</script> --}}
