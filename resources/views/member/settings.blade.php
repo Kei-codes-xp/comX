@@ -21,8 +21,6 @@
 
 @section('content')
     <style>
-       
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -53,8 +51,15 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateX(0px) translateY(0px); }
-            50% { transform: translateX(20px) translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateX(0px) translateY(0px);
+            }
+
+            50% {
+                transform: translateX(20px) translateY(-10px);
+            }
         }
 
         .change-cover-btn {
@@ -224,10 +229,21 @@
             margin-bottom: 5px;
         }
 
-        .stat-value.applied { color: #ffa500; }
-        .stat-value.won { color: #28a745; }
-        .stat-value.current { color: #007bff; }
-        .stat-value.total { color: #6f42c1; }
+        .stat-value.applied {
+            color: #ffa500;
+        }
+
+        .stat-value.won {
+            color: #28a745;
+        }
+
+        .stat-value.current {
+            color: #007bff;
+        }
+
+        .stat-value.total {
+            color: #6f42c1;
+        }
 
         .stat-label {
             color: #666;
@@ -514,7 +530,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Tab Content Styles */
@@ -528,8 +546,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         /* Documents Section Styles */
@@ -551,7 +574,7 @@
             background: white;
             border-radius: 8px;
             margin-bottom: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         .document-info {
@@ -589,11 +612,13 @@
         }
 
         /* Career Overview Styles */
-        .experience-list, .education-list {
+        .experience-list,
+        .education-list {
             margin-bottom: 20px;
         }
 
-        .experience-item, .education-item {
+        .experience-item,
+        .education-item {
             background: #f8f9fa;
             border-radius: 8px;
             padding: 20px;
@@ -652,17 +677,20 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        .experience-header, .education-header {
+        .experience-header,
+        .education-header {
             margin-bottom: 10px;
         }
 
-        .experience-header h4, .education-header h4 {
+        .experience-header h4,
+        .education-header h4 {
             margin: 0;
             color: #333;
             font-size: 16px;
@@ -691,13 +719,13 @@
         }
     </style>
 
-    @if(session('error'))
+    @if (session('error'))
         <div class="alert alert-danger">
             {{ session('error') }}
         </div>
     @endif
 
-    @if(session('success'))
+    @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
@@ -717,7 +745,10 @@
                 <div class="avatar-section">
                     <div class="avatar-upload-container">
                         <div class="profile-avatar" onclick="document.getElementById('avatarInput').click()">
-                            <img id="avatarPreview" src="{{ $user->avatar_url ? asset('storage/' . $user->avatar_url) : asset('images/default-avatar.png') }}" alt="Avatar">
+                            <img id="avatarPreview"
+                                src="{{ $user->avatar_url ? asset($user->avatar_url) : asset('images/default-avatar.png') }}"
+                                alt="Avatar">
+
                             <div class="avatar-overlay">
                                 <span>📷</span>
                             </div>
@@ -729,9 +760,9 @@
 
                 <!-- Profile Info -->
                 <div class="profile-info">
-                    <div class="profile-name" id="displayName">{{$user->username}}</div>
-                    <div class="profile-username" id="displayUsername">{{$user->email}}</div>
-                    
+                    <div class="profile-name" id="displayName">{{ $user->username }}</div>
+                    <div class="profile-username" id="displayUsername">{{ $user->email }}</div>
+
                     <div class="profile-stats">
                         {{-- <div class="stat-item">
                             <div class="stat-value applied">12</div>
@@ -774,46 +805,54 @@
                 <!-- Tab Content Containers -->
                 <div id="account-settings" class="tab-content active">
                     <!-- Profile Form -->
-                    <form action="{{ route('update.user-profile', $user->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('update.user-profile', $user->id) }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
                         <!-- Personal Information Section -->
                         <div class="form-section">
                             <h3 class="section-title">Personal Information</h3>
-                            <input type="file" id="avatarInput" name="avatar_url" class="avatar-input" accept="image/*" onchange="previewAvatar(this)">
+                            <input type="file" id="avatarInput" name="avatar_url" class="avatar-input" accept="image/*"
+                                onchange="previewAvatar(this)">
 
-                            
+
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label class="form-label required">First Name</label>                               
-                                     <input type="text" id="name" class="form-input" name="fname" value="{{ $user->fname }}">
+                                    <label class="form-label required">First Name</label>
+                                    <input type="text" id="name" class="form-input" name="fname"
+                                        value="{{ $user->fname }}">
 
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label required">Last Name</label>
-                                    <input type="text" id="name" class="form-input" name="lname" value="{{ $user->lname }}">
+                                    <input type="text" id="name" class="form-input" name="lname"
+                                        value="{{ $user->lname }}">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
                                     <label class="form-label required">Username</label>
-                                     <input type="text" id="name" class="form-input" name="username" value="{{ $user->username }}">
+                                    <input type="text" id="name" class="form-input" name="username"
+                                        value="{{ $user->username }}">
                                     <div class="form-help">This will be your unique identifier</div>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label required">Email</label>
-                                    <input type="email" id="email" class="form-input" name="email" value="{{ $user->email }}">
+                                    <input type="email" id="email" class="form-input" name="email"
+                                        value="{{ $user->email }}">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
                                     <label class="form-label required">Contact</label>
-                                    <input type="tel" id="email" class="form-input" name="contact" value="{{ $user->contact }}">
+                                    <input type="tel" id="email" class="form-input" name="contact"
+                                        value="{{ $user->contact }}">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Website</label>
-                                    <input type="url" class="form-input" id="website" name="website" value="https://johndoe.com" placeholder="https://example.com">
+                                    <input type="url" class="form-input" id="website" name="website"
+                                        value="https://johndoe.com" placeholder="https://example.com">
                                 </div>
                             </div>
                         </div>
@@ -821,13 +860,15 @@
                         <!-- Security Section -->
                         <div class="form-section">
                             <h3 class="section-title">Security</h3>
-                            
+
                             <div class="form-row single">
                                 <div class="form-group">
                                     <label class="form-label">Password</label>
                                     <div class="password-container">
-                                        <input type="password" class="form-input" id="password" name="password" placeholder="Leave blank to keep current password">
-                                        <button type="button" class="password-toggle" onclick="togglePassword('password')">👁️</button>
+                                        <input type="password" class="form-input" id="password" name="password"
+                                            placeholder="Leave blank to keep current password">
+                                        <button type="button" class="password-toggle"
+                                            onclick="togglePassword('password')">👁️</button>
                                     </div>
                                     <div class="form-help">Leave blank if you don't want to change your password</div>
                                 </div>
@@ -845,12 +886,13 @@
                 <div id="career-overview" class="tab-content">
                     <div class="form-section">
                         <h3 class="section-title">Career Information</h3>
-                        
+
                         <!-- Professional Summary -->
                         <div class="form-row single">
                             <div class="form-group">
                                 <label class="form-label">Professional Summary</label>
-                                <textarea class="form-input" rows="4" placeholder="Write a brief summary of your professional background and career goals"></textarea>
+                                <textarea class="form-input" rows="4"
+                                    placeholder="Write a brief summary of your professional background and career goals"></textarea>
                             </div>
                         </div>
 
@@ -858,17 +900,20 @@
                         <div class="form-section">
                             <h3 class="section-title">Work Experience</h3>
                             <div class="experience-list">
-                                @foreach($user->experiences as $experience)
-                                <div class="experience-item">
-                                    <div class="experience-header">
-                                        <h4>{{ $experience->title }} at {{ $experience->company }}</h4>
-                                        <span class="date-range">{{ date('M Y', strtotime($experience->start_date)) }} - {{ $experience->end_date ? date('M Y', strtotime($experience->end_date)) : 'Present' }}</span>
+                                @foreach ($user->experiences as $experience)
+                                    <div class="experience-item">
+                                        <div class="experience-header">
+                                            <h4>{{ $experience->title }} at {{ $experience->company }}</h4>
+                                            <span class="date-range">{{ date('M Y', strtotime($experience->start_date)) }}
+                                                -
+                                                {{ $experience->end_date ? date('M Y', strtotime($experience->end_date)) : 'Present' }}</span>
+                                        </div>
                                     </div>
-                                </div>
                                 @endforeach
                             </div>
-                            <button type="button" class="btn btn-secondary" onclick="toggleForm('experienceForm')" style="margin-top: 15px;">Add Experience</button>
-                            
+                            <button type="button" class="btn btn-secondary" onclick="toggleForm('experienceForm')"
+                                style="margin-top: 15px;">Add Experience</button>
+
                             <!-- Experience Form Dropdown -->
                             <div id="experienceForm" class="form-dropdown" style="display: none;">
                                 <form action="{{ route('store.experience') }}" method="POST">
@@ -895,7 +940,8 @@
                                     </div>
                                     <div class="form-actions">
                                         <button type="submit" class="btn btn-primary">Save Experience</button>
-                                        <button type="button" class="btn btn-secondary" onclick="toggleForm('experienceForm')">Cancel</button>
+                                        <button type="button" class="btn btn-secondary"
+                                            onclick="toggleForm('experienceForm')">Cancel</button>
                                     </div>
                                 </form>
                             </div>
@@ -905,18 +951,21 @@
                         <div class="form-section">
                             <h3 class="section-title">Education</h3>
                             <div class="education-list">
-                                @foreach($user_education->education as $education)
-                                <div class="education-item">
-                                    <div class="education-header">
-                                        <h4>{{ $education->degree }} in {{ $education->field_of_study }}</h4>
-                                        <span class="school-name">{{ $education->school }}</span>
-                                        <span class="date-range">{{ date('M Y', strtotime($education->start_date)) }} - {{ $education->end_date ? date('M Y', strtotime($education->end_date)) : 'Present' }}</span>
+                                @foreach ($user_education->education as $education)
+                                    <div class="education-item">
+                                        <div class="education-header">
+                                            <h4>{{ $education->degree }} in {{ $education->field_of_study }}</h4>
+                                            <span class="school-name">{{ $education->school }}</span>
+                                            <span class="date-range">{{ date('M Y', strtotime($education->start_date)) }}
+                                                -
+                                                {{ $education->end_date ? date('M Y', strtotime($education->end_date)) : 'Present' }}</span>
+                                        </div>
                                     </div>
-                                </div>
                                 @endforeach
                             </div>
-                            <button type="button" class="btn btn-secondary" onclick="toggleForm('educationForm')" style="margin-top: 15px;">Add Education</button>
-                            
+                            <button type="button" class="btn btn-secondary" onclick="toggleForm('educationForm')"
+                                style="margin-top: 15px;">Add Education</button>
+
                             <!-- Education Form Dropdown -->
                             <div id="educationForm" class="form-dropdown" style="display: none;">
                                 <form action="{{ route('store.education') }}" method="POST">
@@ -959,7 +1008,8 @@
                                     </div>
                                     <div class="form-actions">
                                         <button type="submit" class="btn btn-primary">Save Education</button>
-                                        <button type="button" class="btn btn-secondary" onclick="toggleForm('educationForm')">Cancel</button>
+                                        <button type="button" class="btn btn-secondary"
+                                            onclick="toggleForm('educationForm')">Cancel</button>
                                     </div>
                                 </form>
                             </div>
@@ -969,12 +1019,13 @@
                         <div class="form-section">
                             <h3 class="section-title">Skills</h3>
                             <div class="skills-container">
-                                @foreach($user->skill as $skill)
-                                <span class="skill-tag">{{ $skill->name }}</span>
+                                @foreach ($user->skill as $skill)
+                                    <span class="skill-tag">{{ $skill->name }}</span>
                                 @endforeach
                             </div>
-                            <button type="button" class="btn btn-secondary" onclick="toggleForm('skillForm')" style="margin-top: 15px;">Add Skill</button>
-                            
+                            <button type="button" class="btn btn-secondary" onclick="toggleForm('skillForm')"
+                                style="margin-top: 15px;">Add Skill</button>
+
                             <!-- Skill Form Dropdown -->
                             <div id="skillForm" class="form-dropdown" style="display: none;">
                                 <form action="{{ route('store.skill') }}" method="POST">
@@ -987,7 +1038,8 @@
                                     </div>
                                     <div class="form-actions">
                                         <button type="submit" class="btn btn-primary">Save Skill</button>
-                                        <button type="button" class="btn btn-secondary" onclick="toggleForm('skillForm')">Cancel</button>
+                                        <button type="button" class="btn btn-secondary"
+                                            onclick="toggleForm('skillForm')">Cancel</button>
                                     </div>
                                 </form>
                             </div>
@@ -1051,7 +1103,7 @@
         function togglePassword(fieldId) {
             const field = document.getElementById(fieldId);
             const toggle = field.nextElementSibling;
-            
+
             if (field.type === 'password') {
                 field.type = 'text';
                 toggle.textContent = '🙈';
@@ -1076,7 +1128,7 @@
             });
         }
 
-    
+
         // Reset form
         function resetForm() {
             if (confirm('Are you sure you want to discard all changes?')) {
@@ -1090,14 +1142,14 @@
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', function(e) {
                 e.preventDefault();
-                
+
                 // Remove active class from all tabs and contents
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                
+
                 // Add active class to clicked tab
                 this.classList.add('active');
-                
+
                 // Show corresponding content
                 const tabId = this.getAttribute('data-tab');
                 document.getElementById(tabId).classList.add('active');
@@ -1142,14 +1194,13 @@
         document.addEventListener('click', function(e) {
             const forms = document.querySelectorAll('.form-dropdown');
             const addButtons = document.querySelectorAll('.btn-secondary');
-            
+
             forms.forEach(form => {
-                if (!form.contains(e.target) && !Array.from(addButtons).some(btn => btn.contains(e.target))) {
+                if (!form.contains(e.target) && !Array.from(addButtons).some(btn => btn.contains(e
+                    .target))) {
                     form.style.display = 'none';
                 }
             });
         });
-
     </script>
-    
 @endsection
